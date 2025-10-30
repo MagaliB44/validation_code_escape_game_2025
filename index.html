@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vérification de code</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .container {
+      background: white;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 320px;
+    }
+    input {
+      padding: 0.6em;
+      font-size: 1em;
+      margin-right: 0.5em;
+      width: 60%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 0.6em 0.9em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    #message {
+      margin-top: 1em;
+      font-weight: bold;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Entrez votre code</h2>
+    <div>
+      <input type="text" id="codeInput" placeholder="Votre code ici" autocomplete="off" />
+      <button id="validerBtn">Valider</button>
+    </div>
+    <p id="message"></p>
+  </div>
+
+  <!-- 🎉 Bibliothèque de confettis -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const codeCorrect = "1234";
+
+    const input = document.getElementById("codeInput");
+    const message = document.getElementById("message");
+    const btn = document.getElementById("validerBtn");
+
+    function verifierCode() {
+      const saisie = input.value.trim();
+      if (saisie === "") {
+        message.textContent = "⚠️ Veuillez entrer un code.";
+        message.style.color = "#b35f00";
+        return;
+      }
+
+      if (saisie === codeCorrect) {
+        message.textContent = "🎉 Bravo à vous tous ! Vous avez arrété les pirates. Vous pouvez retourner travailler.";
+        message.style.color = "green";
+        lancerConfettisCentre();
+      } else {
+        message.textContent = "❌ Code erroné. La société a été piratée. Mais vous pouvez quand même retourner travailler. La brigade PPA a réussi à déjouer les pirates pour vous.";
+        message.style.color = "red";
+      }
+    }
+
+    btn.addEventListener("click", verifierCode);
+    input.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") verifierCode();
+    });
+
+    // 🎆 Explosion de confettis réalistes au centre
+    function lancerConfettisCentre() {
+      const duration = 4 * 1000; // durée totale : 2 secondes
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+
+        // 💥 Explosion au centre de l’écran
+        confetti(Object.assign({}, defaults, {
+          particleCount,
+          origin: {
+            x: 0.5,
+            y: 0.5
+          },
+          colors: ["#ff0", "#0f0", "#0ff", "#f0f", "#f00", "#00f"]
+        }));
+      }, 200);
+    }
+  </script>
+</body>
+</html>
